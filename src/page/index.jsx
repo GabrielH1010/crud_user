@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Container, Header, Scroll, Table } from "./styles";
+import { Container, Header, Scroll, Table, Form, Modal } from "./styles";
 
 const UserForm = ({ onSubmit, editingUser, setEditingUser }) => {
   const [name, setName] = useState("");
@@ -31,21 +31,29 @@ const UserForm = ({ onSubmit, editingUser, setEditingUser }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Enter a name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Enter a name"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <button type="submit">{editingUser ? "Update User" : "Add User"}</button>
-    </form>
+    <Form onSubmit={handleSubmit}>
+      <div className="container">
+        <label htmlFor="">NOME</label>
+        <input
+          type="text"
+          placeholder="Insira seu nome"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+      <div className="container">
+        <label htmlFor="">USERNAME</label>
+        <input
+          type="text"
+          placeholder="Insira seu username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </div>
+      <button type="submit" disabled={name === "" || username === ""}>
+        {editingUser ? "ALTERAR" : "ADICIONAR"}
+      </button>
+    </Form>
   );
 };
 
@@ -63,8 +71,18 @@ const UserTable = ({ users, onEdit, onDelete }) => {
             <td>{user.name}</td>
             <td>{user.username}</td>
             <td style={{ justifyContent: "space-around" }}>
-              <button onClick={() => onEdit(user)}>Edit</button>
-              <button onClick={() => onDelete(user)}>Delete</button>
+              <button
+                style={{ background: "green" }}
+                onClick={() => onEdit(user)}
+              >
+                EDITAR
+              </button>
+              <button
+                style={{ background: "red" }}
+                onClick={() => onDelete(user)}
+              >
+                DELETAR
+              </button>
             </td>
           </thead>
         ))}
@@ -77,16 +95,18 @@ const ConfirmationModal = ({ show, onClose, onConfirm }) => {
   if (!show) return null;
 
   return (
-    <div className="modal">
+    <Modal>
       <div className="modal-content">
-        <h3>Confirmation</h3>
-        <p>Are you sure you want to proceed?</p>
+        <h3>DELETAR USUÁRIO</h3>
+        <p>Você tem certeza que deseja deletar esse usuário?</p>
         <div className="modal-buttons">
-          <button onClick={onClose}>Cancel</button>
-          <button onClick={onConfirm}>Confirm</button>
+          <button style={{ background: "red" }} onClick={onClose}>
+            CANCELAR
+          </button>
+          <button onClick={onConfirm}>CONFIRMAR</button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 
@@ -169,7 +189,7 @@ const App = () => {
 
   return (
     <Container>
-      <h1>Todo Users</h1>
+      <h1>LISTA DE USUÁRIO</h1>
       <UserForm
         onSubmit={editingUser ? updateUser : addUser}
         editingUser={editingUser}
